@@ -46,9 +46,16 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\A.cs" />
+     <Compile Include="Assets\B.cs" />
+     <Compile Include="Assets\CameraMove.cs" />
      <Compile Include="Assets\Enmey1Ai.cs" />
+     <Compile Include="Assets\GameFight\Script\Common\CommonClass.cs" />
+     <Compile Include="Assets\GameFight\Script\Hp_bar.cs" />
      <Compile Include="Assets\GameFight\Script\LoginSceneScript.cs" />
+     <Compile Include="Assets\Monster.cs" />
      <Compile Include="Assets\PlayerControl.cs" />
+     <Compile Include="Assets\WeaponDamage.cs" />
      <None Include="Assets\GameFight\Model\Swordman\Swordman_Animation.txt" />
      <None Include="Assets\GameFight\Model\Wolf\Wolf_Animation.txt" />
  <Reference Include="UnityEngine.UI">

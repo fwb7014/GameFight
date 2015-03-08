@@ -53,8 +53,10 @@
      <Compile Include="Assets\GameFight\Script\Common\CommonClass.cs" />
      <Compile Include="Assets\GameFight\Script\Hp_bar.cs" />
      <Compile Include="Assets\GameFight\Script\LoginSceneScript.cs" />
+     <Compile Include="Assets\GameFight\Script\Player\PlayerStatus.cs" />
      <Compile Include="Assets\Monster.cs" />
      <Compile Include="Assets\PlayerControl.cs" />
+     <Compile Include="Assets\PlayerDetect.cs" />
      <Compile Include="Assets\WeaponDamage.cs" />
      <None Include="Assets\GameFight\Model\Swordman\Swordman_Animation.txt" />
      <None Include="Assets\GameFight\Model\Wolf\Wolf_Animation.txt" />

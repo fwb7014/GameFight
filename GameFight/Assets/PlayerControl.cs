@@ -2,22 +2,25 @@
 using System.Collections;
 
 public class PlayerControl : MonoBehaviour {
-
-	public float speedFactorFade = 2.0f;
-
+	
 	private Rigidbody myRigidbody;
 	private Animator anim;
-	private SphereCollider myCollider;
 	private Transform mytransform;
 
-	private float speedFactor;
-	private float moveSpeed;
-	private float moveSpeedOrigin;
-	private Vector3 moveDir;
+	private PlayerStatus status;
 
+	//移动相关
+	private float speedFadeFactor = 0.62f;
+	private float moveSpeed;   //移动速度
+	private Vector3 moveDir;   //移动方向
+	private Vector3 movePos;   //移动的目的地 
 
-	private int skillid;
-	private int chamovestat;
+	//状态
+	private int animState;
+
+	//攻击相关
+	private GameObject target;
+
 
 	//攻击先关
 	private Vector3 attackVector;
@@ -25,11 +28,12 @@ public class PlayerControl : MonoBehaviour {
 	private float attackDot;
 
 	void Awake(){
-		mytransform = transform.root;
-		myRigidbody = transform.root.GetComponent<Rigidbody> ();
-		anim = transform.root.GetComponent<Animator> ();
-		myCollider = GetComponent<SphereCollider> ();
-		moveSpeed = moveSpeedOrigin = 1.6f; 
+		mytransform = transform;
+		myRigidbody = transform.GetComponent<Rigidbody> ();
+		anim = transform.GetComponent<Animator> ();
+
+		status = GetComponent<PlayerStatus> ();
+		moveSpeed = 0f;
 
 	}
 
@@ -37,6 +41,8 @@ public class PlayerControl : MonoBehaviour {
 	void Start () {
 	
 	}
+
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -44,54 +50,51 @@ public class PlayerControl : MonoBehaviour {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit rayHit;
 			if(Physics.Raycast(ray,out rayHit,100f)){
-				if(rayHit.collider.gameObject.tag == "Floor"){
+				if(rayHit.collider.gameObject.tag == Tags.FLOOR){//碰到地板
 					Vector3 newPos = rayHit.point;
-					Vector3 newDir = new Vector3(newPos.x,mytransform.position.y,newPos.z)-mytransform.position;
-					newDir = newDir.normalized;
-					moveDir = newDir;
-					mytransform.rotation = Quaternion.LookRotation(newDir);
-					moveSpeed = moveSpeedOrigin;
-					speedFactor = 6.5f;
-					chamovestat = 1;
+					Debug.Log ("碰到地板"+newPos);
+					moveSpeed = status.moveSpeed;
+					movePos = rayHit.point;
+					target = null;
+				}
+			}
+		}
+		if (movePos != Vector3.zero) {
+			float leftDistance = Vector3.SqrMagnitude(mytransform.position-movePos);
+			if(leftDistance<5f){
+				if(moveSpeed>0.3f){
+					moveSpeed -=Time.deltaTime*speedFadeFactor*status.moveSpeed;
+				}
+				Debug.Log ("leftDistance="+leftDistance);
+				if(leftDistance<0.15f){
+					moveSpeed = 0f;
+					movePos = Vector3.zero;
 				}
 			}
 		}
 
-		if(chamovestat==1){
-			if(moveDir == Vector3.zero){
-				anim.SetFloat("speed",0f);
-				anim.SetInteger("skillid",0);
-				myCollider.enabled = true;
-			}else{
-				if(speedFactor>0){
-					speedFactor-=speedFactorFade*Time.deltaTime;
-				}
-				anim.SetInteger("skillid",1);
-				anim.SetFloat("speed",speedFactor);
-
-				if(speedFactor<3.5f){
-					if(speedFactor>0.2f){
-						moveSpeed = speedFactor/2f;
-					}else{
-						moveDir = Vector3.zero;
-					}
-				}  
-				mytransform.position+=mytransform.forward*Time.deltaTime*moveSpeed;
-			}
+		if (target == null && moveSpeed > 0) {
+			moveDir =(movePos-mytransform.position).normalized;
+			mytransform.rotation = Quaternion.LookRotation(moveDir);
+			anim.SetInteger(HashIds.Skillid,1);
 		}
+		if (target == null && moveSpeed == 0) {
+			anim.SetInteger(HashIds.Skillid,0);
+		}
+		if (target != null && moveSpeed == 0) {
+			anim.SetInteger(HashIds.Skillid,2);		
+		}
+
+		anim.SetFloat (HashIds.Speed, Mathf.Min(moveSpeed*3f,6f));
+		transform.position += moveDir * Time.deltaTime * moveSpeed;
 
 	}
 
-	void OnTriggerEnter(Collider other){
-		if (other.gameObject.layer == Layers.Enemy) {
-			myCollider.enabled = false;
-			AttackOn(other.gameObject.transform.position);
-		}
-	}
 
-	public void AttackOn(Vector3 monpos)
+
+	public void AttackOn(GameObject target)
 	{
-		Debug.Log ("##############");
+		Vector3 monpos = target.transform.position;
 		this.attackVector = monpos - mytransform.position;
 		//Debug.Log ("before attackVector="+attackVector);
 		this.attackVector[1] = 0f;
@@ -106,7 +109,7 @@ public class PlayerControl : MonoBehaviour {
 			if (this.attackDot < 0.5f)
 			{
 				//this.chamovestat = 17;
-				myCollider.enabled = true;
+				//myCollider.enabled = true;
 				return;
 			}
 		}
@@ -115,16 +118,13 @@ public class PlayerControl : MonoBehaviour {
 			if (this.attackDot < -0.2f)
 			{
 				//this.chamovestat = 17;
-				myCollider.enabled = true;
+				//myCollider.enabled = true;
 				return;
 			}
 		}
-
-
-		Debug.Log ("@@@@@@@@@@@@@@@@@@@");
-		this.chamovestat = 19;
-		//this.pressdelay = 0f;
-		anim.SetInteger ("skillid",2);
+		this.target = target;
+		this.movePos = Vector3.zero;
+		this.moveSpeed = 0f;
 //		this.ef_swingex1.localScale = Vector3.one * 2.4f;
 //		this.ef_swingex1.localRotation = Quaternion.Euler(0f, 0f, 180f);
 //		this.ef_swingex1.position = this.mytransform.position + Vector3.up * 0.055f;

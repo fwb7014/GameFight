@@ -1,13 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\PlayerControl.cs">
     <Files>
-      <File FileName="Assets\GameFight\Script\Hp_bar.cs" Line="38" Column="33" />
-      <File FileName="Assets\WeaponDamage.cs" Line="1" Column="1" />
-      <File FileName="Assets\Enmey1Ai.cs" Line="1" Column="1" />
-      <File FileName="Assets\PlayerControl.cs" Line="190" Column="27" />
-      <File FileName="Assets\A.cs" Line="16" Column="7" />
-      <File FileName="Assets\B.cs" Line="18" Column="4" />
+      <File FileName="Assets\GameFight\Script\Common\CommonClass.cs" Line="25" Column="15" />
+      <File FileName="Assets\PlayerControl.cs" Line="77" Column="54" />
+      <File FileName="Assets\GameFight\Script\Player\PlayerStatus.cs" Line="5" Column="31" />
+      <File FileName="Assets\PlayerDetect.cs" Line="17" Column="30" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
